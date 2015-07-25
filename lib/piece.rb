@@ -28,7 +28,13 @@ class Piece
     #   that this is the starting position, TODO: optimize
     directions = [1,1,0,-1,-1].permutation(2).to_a.uniq
 
-    directions.any? { |dir| count_to_end(dir) + 1 >= @board.connect }
+    if directions.any? { |dir| count_to_end(dir) + 1 >= @board.connect }
+      puts "#{self.color.capitalize} has won!"
+
+      true
+    else
+      false
+    end
   end
 
   def to_s

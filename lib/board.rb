@@ -9,7 +9,7 @@ class Board
 
   # game-over if board is full and no winning sets
 
-  attr_reader :grid, :size, :connect
+  attr_reader :grid, :size, :connect, :turn
 
   def initialize(options={})
     defaults = { size: 7, connect: 4 }
@@ -17,6 +17,8 @@ class Board
     @connect = options[:connect]
     @size = options[:size]
     @grid = Array.new(@size) { Array.new(@size) { nil } }
+
+    @turn = 'red'
   end
 
   def set(pos, val)
@@ -37,12 +39,21 @@ class Board
     end
   end
 
-  def make_move(color, column)
+  def make_move(column)
     if @grid[0][column].nil? && column >= 0 && column < @size
       # piece will insert itself and fall down in initialize method
-      Piece.new(color, column, self)
+      Piece.new(@turn, column, self)
+      next_turn
     else
       raise 'Invalid move'
+    end
+  end
+
+  def next_turn
+    if @turn == 'green'
+      @turn = 'red'
+    else
+      @turn = 'green'
     end
   end
 
@@ -50,9 +61,13 @@ class Board
     @grid.flatten.compact.any? { |piece| piece.winning? }
   end
 
+  def game_over
+    # board completely full
+    @grid.flatten.compact.count == @size*@size
+  end
+
 
   def render
-
     puts '   ' + (0...@size).to_a.join('| ')
     @grid.each.with_index do |row, i|
       raster_line = [i]
@@ -71,17 +86,3 @@ class Board
     pos[0] >= 0 && pos[0] < @size && pos[1] >= 0 && pos[1] < @size
   end
 end
-
-
-b = Board.new
-b.make_move('red', 0)
-b.make_move('red', 1)
-b.make_move('red', 2)
-b.make_move('red', 3)
-p b.is_won?
-
-
-
-
-
-b.render
