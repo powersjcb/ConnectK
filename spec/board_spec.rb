@@ -22,7 +22,7 @@ RSpec.describe Board do
       expect{@board.set(pos, 1)}.to raise_error "Position is off the board"
     end
 
-    it 'correctly sets the value of a grid element' do
+    it 'sets the value of a grid element' do
       pos = [0,0]
       expect(@board.set(pos, 1).grid[0][0]).to eq(1)
     end
@@ -36,7 +36,7 @@ RSpec.describe Board do
       expect{@board.get(pos)}.to raise_error "Position is off the board"
     end
 
-    it 'correctly gets the value of a grid element' do
+    it 'gets the value of a grid element' do
       pos = [1,1]
       @board.set(pos, 1)
       expect(@board.get(pos)).to eq(1)
@@ -63,16 +63,23 @@ RSpec.describe Board do
   context '#is_won?' do
     before(:each) { @board = Board.new(size: 4, connect: 2) }
 
-    it 'correctly returns that the game is not won yet' do
+    it 'returns that the game is not won yet' do
       @board.make_move(0)
       @board.make_move(0)
       expect(@board.is_won?).to be false
     end
 
-    it 'correctly returns that the game has been won' do
+    it 'returns that the game has been won with a column' do
       @board.make_move(0)
       @board.make_move(1)
       @board.make_move(0)
+      expect(@board.is_won?).to be true
+    end
+
+    it 'returns that the game has been won with a diagonal' do
+      @board.make_move(0)
+      @board.make_move(1)
+      @board.make_move(1)
       expect(@board.is_won?).to be true
     end
 
